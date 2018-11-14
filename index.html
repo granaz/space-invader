@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Space Invaders</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- JS -->
+    <script src="js/main.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div id="game"></div>
+</body>
+<script>
+    //Initialise the game;
+    var thisGame;
+    $(document).keydown((key) => {
+        if(key.keyCode == keySpace && gameState == "stopped"){
+            thisGame = new TheGame;
+        }
+    });
+
+    // Capturing Ship Moviment;
+    $(document).keydown((key) => {
+        if (key.keyCode == keyRight && gameState == "running") {
+            thisGame.moveShip(keyRight);
+        }else if(key.keyCode == keyLeft && gameState == "running"){
+            thisGame.moveShip(keyLeft);
+        }
+    });
+
+</script>
+</html>
