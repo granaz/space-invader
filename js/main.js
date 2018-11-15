@@ -21,34 +21,78 @@ function TheGame() {
         laserSpeed: 1,
         bombSpeed: 1,
         invadersSpeed: 10,
-        shipSpeed: 10,
-        numberOfInvaders: 20
+        invadersDescendSpeed: 10,
+        numberOfInvaders: 20,
+        invadersContainer: 1
     }
 
-    // Create the element Ship;
-    let ship = new Ship(50, 100);
+    // Creating the elements;
+    this.ship;
+    this.arrayOfInvaders = [];
 
-    // Create all the invaders;
-    let arrayOfInvaders = [];
-    let row = 4,
-        column = 25; // in %;
+    this.createElements = () => {
+        // Create the element Ship;
+        this.ship = new Ship(50, 100);
 
-    for (let i = 1; i <= this.configs.numberOfInvaders; i++) {
-        arrayOfInvaders.push(new Invader(column, row));
+        // Create all the invaders;        
+        let row = 4; // in %;
+        let column = 0; // in %;
 
-        // Changing the column;
-        if (column == 70) {
-            column = 25;
-        } else {
-            column += 5;
+        for (let i = 1; i <= this.configs.numberOfInvaders; i++) {
+            this.arrayOfInvaders.push(new Invader(column, row));
+
+            // Changing the column;
+            if (column == 90) {
+                column = 0;
+            } else {
+                column += 10;
+            }
+
+            // Changing the row;
+            if ((i % 10) === 0) row += 5;
         }
-
-        // Changing the row;
-        if ((i % 10) === 0) row += 5;
     }
 
-    this.moveShip = function (direction) {
-        ship.move(direction);        
+    this.moveShip = (direction) => {
+        this.ship.move(direction);
+    }
+
+    this.moveInvaders = () => {
+        // Direction to where the invaders are going: 1=right, 0=left;
+        let invaders = $("#blockOfInvaders .invaderBlock");
+        let direction = 1;
+        let invadersDescendSpeed = this.configs.invadersDescendSpeed;
+        
+        setInterval(() => {
+            if (direction == 1) {
+                $("#blockOfInvaders").css("left", this.configs.invadersContainer + "%");
+                this.configs.invadersContainer++;
+            } else {
+                $("#blockOfInvaders").css("left", this.configs.invadersContainer + "%");
+                this.configs.invadersContainer--;
+            }
+
+            if (this.configs.invadersContainer == 26) {
+                direction = 0;
+
+                // Descend the invaders;
+                descendInvaders();
+            } else if (this.configs.invadersContainer == -25) {
+                direction = 1;
+
+                // Descend the invaders;
+                descendInvaders();
+            }
+        }, this.configs.invadersSpeed * 10);
+
+        function descendInvaders(){
+            // Descend the invaders;
+            for (let i = 0; i < invaders.length; i++) {
+                let currentTop = parseFloat($(invaders[i]).css("top"));
+
+                $(invaders[i]).css("top", (currentTop + invadersDescendSpeed) + "px");
+            }
+        }
     }
 }
 
@@ -77,14 +121,12 @@ function Ship(x, y) {
 
     // Moving the Ship;
     this.move = (direction) => {
-        // It must move the ship until the edge of the map;
-        
-
-        if (direction == keyRight) {
-            $(".shipBlock").css("left", (this.currentX + 1)+"%").css("left", "-=20px");
+        // It must move the ship up to the edge of the map, then block it;
+        if (direction == keyRight && (this.currentX + 1) != 101) {
+            $(".shipBlock").css("left", (this.currentX + 1) + "%").css("left", "-=20px");
             this.currentX += 1;
-        }else if(direction == keyLeft){
-            $(".shipBlock").css("left", (this.currentX - 1)+"%").css("left", "-=20px");
+        } else if (direction == keyLeft && (this.currentX + 1) != 5) {
+            $(".shipBlock").css("left", (this.currentX - 1) + "%").css("left", "-=20px");
             this.currentX -= 1;
         }
     }
@@ -99,7 +141,7 @@ function Ship(x, y) {
 }
 
 /**
- * Invaders have 2 positions and a level;
+ * Invaders have 2 positions;
  * @param {integer} x 
  * @param {integer} y 
  */
@@ -110,7 +152,7 @@ function Invader(x, y) {
 
     this.render = (x, y) => {
         let spanHtml = "<span class='block invaderBlock' style='top: calc(" + y + "%); left: calc(" + x + "%);'></span>";
-        $("#game").append(spanHtml);
+        $("#game #blockOfInvaders").append(spanHtml);
     }
 
     this.fire = () => {
