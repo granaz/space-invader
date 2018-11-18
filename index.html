@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
+
 <body>
     <div id="game">
         <div id="blockOfInvaders"></div>
@@ -24,12 +26,12 @@
 <script>
     //Initialise the game;
     var thisGame;
-    
+
     $(document).keydown((key) => {
-        if(key.keyCode == keySpace && gameState == "stopped"){
+        if (key.keyCode == keySpace && gameState == "stopped") {
             // Initialising the Game;
             thisGame = new TheGame;
-        
+
             // Creating Elements
             thisGame.createElements();
 
@@ -38,14 +40,28 @@
         }
     });
 
-    // Capturing Ship Moviment;
-    $(document).keydown((key) => {
-        if (key.keyCode == keyRight && gameState == "running") {
-            thisGame.moveShip(keyRight);
-        }else if(key.keyCode == keyLeft && gameState == "running"){
-            thisGame.moveShip(keyLeft);
-        }
-    });    
+    // Capturing Ship Moviment and Firing;
+    var map = {};
+    var onkeydown = onkeyup = function (e) {
+        e = e || event;
+        map[e.keyCode] = e.type == 'keydown';
 
+        if (gameState == "running") {
+            if (map[keyLeft] == true && map[keySpace] == true) {
+                thisGame.ship.move(keyLeft);
+                thisGame.ship.fire();
+            } else if (map[keyRight] == true && map[keySpace] == true) {
+                thisGame.ship.move(keyRight);
+                thisGame.ship.fire();
+            } else if (map[keyRight] == true) {
+                thisGame.ship.move(keyRight);
+            } else if (map[keyLeft] == true) {
+                thisGame.ship.move(keyLeft);
+            } else if (map[keySpace] == true){
+                thisGame.ship.fire();
+            }
+        }        
+    }
 </script>
+
 </html>

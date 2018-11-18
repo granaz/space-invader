@@ -26,6 +26,13 @@
     position: absolute;    
 }
 
+.laser{
+    width: 5px;
+    height: 10px;
+    position: absolute;
+    background-color: green;
+}
+
 .invaderBlock{
     background-color: red;
 }

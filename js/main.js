@@ -18,8 +18,8 @@ function TheGame() {
     this.configs = {
         lives: 5,
         level: 1,
-        laserSpeed: 1,
-        bombSpeed: 1,
+        laserSpeed: 10,
+        bombSpeed: 10,
         invadersSpeed: 10,
         invadersDescendSpeed: 10,
         numberOfInvaders: 20,
@@ -39,7 +39,7 @@ function TheGame() {
         let column = 0; // in %;
 
         for (let i = 1; i <= this.configs.numberOfInvaders; i++) {
-            this.arrayOfInvaders.push(new Invader(column, row));
+            this.arrayOfInvaders.push(new Invader(column, row, i));
 
             // Changing the column;
             if (column == 90) {
@@ -53,16 +53,12 @@ function TheGame() {
         }
     }
 
-    this.moveShip = (direction) => {
-        this.ship.move(direction);
-    }
-
     this.moveInvaders = () => {
         // Direction to where the invaders are going: 1=right, 0=left;
         let invaders = $("#blockOfInvaders .invaderBlock");
         let direction = 1;
         let invadersDescendSpeed = this.configs.invadersDescendSpeed;
-        
+
         setInterval(() => {
             if (direction == 1) {
                 $("#blockOfInvaders").css("left", this.configs.invadersContainer + "%");
@@ -85,7 +81,7 @@ function TheGame() {
             }
         }, this.configs.invadersSpeed * 10);
 
-        function descendInvaders(){
+        function descendInvaders() {
             // Descend the invaders;
             for (let i = 0; i < invaders.length; i++) {
                 let currentTop = parseFloat($(invaders[i]).css("top"));
@@ -133,7 +129,9 @@ function Ship(x, y) {
 
     // Fires the Ship Laser
     this.fire = () => {
+        let shot = new Laser(this.currentX, this.currentY, Math.floor(Math.random() * 10000));
 
+        shot.move();
     }
 
     // Render the first time...
@@ -144,14 +142,16 @@ function Ship(x, y) {
  * Invaders have 2 positions;
  * @param {integer} x 
  * @param {integer} y 
+ * @param {integer} id
  */
-function Invader(x, y) {
+function Invader(x, y, id) {
     // Current invader position;
     this.currentX = x;
     this.currentY = y;
+    this.id = "invader" + id;
 
     this.render = (x, y) => {
-        let spanHtml = "<span class='block invaderBlock' style='top: calc(" + y + "%); left: calc(" + x + "%);'></span>";
+        let spanHtml = "<span id='" + this.id + "' class='block invaderBlock' style='top: calc(" + y + "%); left: calc(" + x + "%);'></span>";
         $("#game #blockOfInvaders").append(spanHtml);
     }
 
@@ -164,12 +164,37 @@ function Invader(x, y) {
 }
 
 /**
- * The Ship fires Lasers, it has 2 positions and speed;
+ * The Ship fires Lasers, it has 2 positions and id;
  * @param {integer} x 
  * @param {integer} y 
+ * @param {integer} id 
  */
-function Laser(x, y) {
+function Laser(x, y, id) {
+    this.currentX = x;
+    this.currentY = y;
+    this.id = "laser" + id;
 
+    this.render = (x, y) => {
+        let spanHtml = "<span id='" + this.id + "' class='laser' style='top: calc(" + y + "% - 35px); left: calc(" + x + "% - 11px)'></span>";
+        $("#game").append(spanHtml);
+    }
+
+    this.move = () => {
+        let moveInterval = setInterval(() => {
+            // Ascending the laser
+            $("#" + this.id).css("top", (this.currentY - 1) + "%").css("top", "-=35px");
+            this.currentY -= 1;
+
+            if(this.currentY == 7){
+                clearInterval(moveInterval);
+                $("#"+this.id).remove();
+            }
+
+        }, thisGame.configs.laserSpeed * 10);
+    }
+
+    // First Render;
+    this.render(x, y);
 }
 
 /**
