@@ -3,6 +3,11 @@
     Space Invaders
 
 **/
+html, body{
+    padding: 0px;
+    margin: 0px;
+    font-family: "Calibri", sans-serif;
+}
 
 #game{
     width: 500px;
@@ -18,6 +23,14 @@
     height: 500px;
     position: relative;
     margin: 0 auto;
+}
+
+#status{
+    width: 500px;
+    height: auto;
+    position: relative;
+    margin: 0 auto;
+    background-color: #bebebe;
 }
 
 .block{
