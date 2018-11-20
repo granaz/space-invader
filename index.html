@@ -43,10 +43,20 @@
             thisGame.createElements();
 
             // Moving the Invaders
-            // thisGame.moveInvaders();
+            thisGame.moveInvaders();
 
             // Invaders start to attack;
-            // thisGame.invadersAttack();
+            thisGame.invadersAttack();
+
+            let levelInterval = setInterval(() => {
+                if(thisGame.arrayOfInvaders.length == 0 && gameState == "running"){
+                    thisGame.nextLevel();
+                }
+
+                if(thisGame.configs.lives == 0 && gameState == "running"){
+                    thisGame.gameOver();
+                }
+            }, 200);
         }
     });
 

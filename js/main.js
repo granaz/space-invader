@@ -25,9 +25,9 @@ function TheGame() {
         points: 0,
         laserSpeed: 10,
         bombSpeed: 10,
-        bombCurrency: 20,
+        bombCurrency: 30,
         invadersSpeed: 10,
-        invadersDescendSpeed: 10,
+        invadersDescendSpeed: 2,
         numberOfInvaders: 20,
         invadersContainer: 1
     }
@@ -38,7 +38,7 @@ function TheGame() {
 
     this.createElements = () => {
         // Create the element Ship;
-        this.ship = new Ship(50, 100);
+        if (gameState != "paused") this.ship = new Ship(50, 100);
 
         // Create all the invaders;        
         let row = 4; // in %;
@@ -61,11 +61,9 @@ function TheGame() {
 
     this.moveInvaders = () => {
         // Direction to where the invaders are going: 1=right, 0=left;
-        let invaders = $("#blockOfInvaders .invaderBlock");
         let direction = 1;
-        let invadersDescendSpeed = this.configs.invadersDescendSpeed;
 
-        setInterval(() => {
+        let moveInterval = setInterval(() => {
             if (direction == 1) {
                 $("#blockOfInvaders").css("left", this.configs.invadersContainer + "%");
                 this.configs.invadersContainer++;
@@ -78,27 +76,30 @@ function TheGame() {
                 direction = 0;
 
                 // Descend the invaders;
-                descendInvaders();
+                descendInvaders(this.arrayOfInvaders);
             } else if (this.configs.invadersContainer == -25) {
                 direction = 1;
 
                 // Descend the invaders;
-                descendInvaders();
+                descendInvaders(this.arrayOfInvaders);
             }
+
+            if (this.arrayOfInvaders.length == 0) {
+                clearInterval(moveInterval);
+            }
+
         }, this.configs.invadersSpeed * 10);
 
-        function descendInvaders() {
+        function descendInvaders(arrayOfInvaders) {
             // Descend the invaders;
-            for (let i = 0; i < invaders.length; i++) {
-                let currentTop = parseFloat($(invaders[i]).css("top"));
-
-                $(invaders[i]).css("top", (currentTop + invadersDescendSpeed) + "px");
+            for (let i = 0; i < arrayOfInvaders.length; i++) {
+                arrayOfInvaders[i].move();
             }
         }
     }
 
     this.invadersAttack = () => {
-        setInterval(() => {
+        let attackInterval = setInterval(() => {
             for (let i = 0; i < this.arrayOfInvaders.length; i++) {
                 let a = Math.floor(Math.random() * this.configs.bombCurrency),
                     b = Math.floor(Math.random() * this.configs.bombCurrency);
@@ -106,6 +107,10 @@ function TheGame() {
                 if (a == b) {
                     this.arrayOfInvaders[i].fire();
                 }
+            }
+
+            if (this.arrayOfInvaders.length == 0) {
+                clearInterval(attackInterval);
             }
         }, 1000);
     }
@@ -117,6 +122,42 @@ function TheGame() {
     }
 
     this.nextLevel = () => {
+        gameState = "paused";
 
+        // 3 seconds to start the new level
+        setTimeout(() => {
+            // Settings the configs to the next level;
+            this.configs.level++;
+            this.configs.bombSpeed++;
+            this.configs.bombCurrency++;
+            this.configs.invadersSpeed++;
+            this.configs.invadersDescendSpeed++;
+            this.configs.numberOfInvaders += 10;        
+
+            //clear the map
+            $(".laser").remove();
+            $(".bomb").remove();
+
+            // Initiliasing the new level;
+            this.updateStatus();
+            this.createElements();
+            this.moveInvaders();
+            this.invadersAttack();
+
+            gameState = "running";
+
+        }, 3000);
+    }
+
+    this.gameOver = () => {
+        // Game Over, it will prepare the map to restart the game;
+        gameState = "stopped";
+
+        this.arrayOfInvaders = [];
+
+        $("#shipBlock").remove();
+        $(".invaderBlock").remove();
+        $(".laser").remove();
+        $(".bomb").remove();
     }
 }

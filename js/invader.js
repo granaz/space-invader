@@ -15,39 +15,52 @@ function Invader(x, y, id) {
         $("#game #blockOfInvaders").append(spanHtml);
     }
 
+    this.move = () => {        
+        $("#"+this.id).css("top", (this.currentY + thisGame.configs.invadersDescendSpeed) + "%");
+        this.currentY += thisGame.configs.invadersDescendSpeed;
+    }
+
     this.fire = () => {
         // Calculate X
-        let x = this.currentX - 9;
+        let x = [26, 31, 36, 41, 46, 51, 56, 61, 66, 71];
+        for (let i = 0; i < x.length; i++) {
+            x[i] += thisGame.configs.invadersContainer;
+        }
 
-        let shot = new Bomb(x, this.currentY, Math.floor(Math.random() * 100000));
+        let shot = new Bomb(x[(this.currentX / 10)], this.currentY, Math.floor(Math.random() * 100000));
 
         let moveInterval = setInterval(() => {
-            // Before move the bomb, verify if the bomb have hit the ship;
-            let bombBoundaries = document.getElementById(shot.id).getBoundingClientRect(),
-                shipBoundaries = document.getElementById("shipBlock").getBoundingClientRect();
-            
-            if ((shipBoundaries.top) >= bombBoundaries.top && (shipBoundaries.top) <= (bombBoundaries.top + 10)) {
-                if ((bombBoundaries.left + 2.5) >= shipBoundaries.left && (bombBoundaries.left + 2.5) <= shipBoundaries.right) {
-                    // Remove the bomb;
-                    $("#" + shot.id).remove();
-
-                    // Decresce one live;
-                    thisGame.configs.lives -= 1;
-
-                    // Update status
-                    thisGame.updateStatus();
-
+            if (gameState == "stopped" || gameState == "paused") {
+                clearInterval(moveInterval);
+            }else{
+                // Before move the bomb, verify if the bomb have hit the ship;
+                let bombBoundaries = document.getElementById(shot.id).getBoundingClientRect(),
+                    shipBoundaries = document.getElementById("shipBlock").getBoundingClientRect();
+    
+                if ((shipBoundaries.top) >= bombBoundaries.top && (shipBoundaries.top) <= (bombBoundaries.top + 10)) {
+                    if ((bombBoundaries.left + 2.5) >= shipBoundaries.left && (bombBoundaries.left + 2.5) <= shipBoundaries.right) {
+                        // Remove the bomb;
+                        $("#" + shot.id).remove();
+    
+                        // Decresce one live;
+                        thisGame.configs.lives -= 1;
+    
+                        // Update status
+                        thisGame.updateStatus();
+    
+                        clearInterval(moveInterval);
+                    }
+                }
+    
+                shot.move();
+    
+                // If it hits the top, delete the laser and clear the interval;
+                if (shot.currentY == 95) {
                     clearInterval(moveInterval);
+                    $("#" + shot.id).remove();
                 }
             }
 
-            // shot.move();
-
-            // If it hits the top, delete the laser and clear the interval;
-            if (shot.currentY == 95) {
-                clearInterval(moveInterval);
-                $("#" + shot.id).remove();
-            }
         }, thisGame.configs.bombSpeed * 10);
     }
 
