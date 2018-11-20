@@ -46,11 +46,18 @@ html, body{
     background-color: green;
 }
 
+.bomb{
+    width: 5px;
+    height: 10px;
+    position: absolute;
+    background-color: aqua;
+}
+
 .invaderBlock{
     background-color: red;
 }
 
-.shipBlock{
+#shipBlock{
     background-color: blue;
     top: calc(100% - 25px);
     left: calc(50% - 20px);

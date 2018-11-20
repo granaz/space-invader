@@ -16,7 +16,39 @@ function Invader(x, y, id) {
     }
 
     this.fire = () => {
-        console.log("firing");
+        // Calculate X
+        let x = this.currentX - 9;
+
+        let shot = new Bomb(x, this.currentY, Math.floor(Math.random() * 100000));
+
+        let moveInterval = setInterval(() => {
+            // Before move the bomb, verify if the bomb have hit the ship;
+            let bombBoundaries = document.getElementById(shot.id).getBoundingClientRect(),
+                shipBoundaries = document.getElementById("shipBlock").getBoundingClientRect();
+            
+            if ((shipBoundaries.top) >= bombBoundaries.top && (shipBoundaries.top) <= (bombBoundaries.top + 10)) {
+                if ((bombBoundaries.left + 2.5) >= shipBoundaries.left && (bombBoundaries.left + 2.5) <= shipBoundaries.right) {
+                    // Remove the bomb;
+                    $("#" + shot.id).remove();
+
+                    // Decresce one live;
+                    thisGame.configs.lives -= 1;
+
+                    // Update status
+                    thisGame.updateStatus();
+
+                    clearInterval(moveInterval);
+                }
+            }
+
+            // shot.move();
+
+            // If it hits the top, delete the laser and clear the interval;
+            if (shot.currentY == 95) {
+                clearInterval(moveInterval);
+                $("#" + shot.id).remove();
+            }
+        }, thisGame.configs.bombSpeed * 10);
     }
 
     // First Render...
@@ -28,6 +60,22 @@ function Invader(x, y, id) {
  * @param {integer} x 
  * @param {integer} y 
  */
-function Bomb(x, y) {
+function Bomb(x, y, id) {
+    this.currentX = x;
+    this.currentY = y;
+    this.id = "bomb" + id;
 
+    this.render = (x, y) => {
+        let spanHtml = "<span id='" + this.id + "' class='bomb' style='top: calc(" + y + "% + 20px); left: calc(" + x + "%)'></span>";
+        $("#game").append(spanHtml);
+    }
+
+    this.move = () => {
+        // Ascending the laser
+        $("#" + this.id).css("top", (this.currentY + 1) + "%").css("top", "+=20px");
+        this.currentY += 1;
+    }
+
+    // First Render;
+    this.render(x, y);
 }

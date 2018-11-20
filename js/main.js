@@ -25,6 +25,7 @@ function TheGame() {
         points: 0,
         laserSpeed: 10,
         bombSpeed: 10,
+        bombCurrency: 20,
         invadersSpeed: 10,
         invadersDescendSpeed: 10,
         numberOfInvaders: 20,
@@ -55,9 +56,6 @@ function TheGame() {
 
             // Changing the row;
             if ((i % 10) === 0) row += 5;
-
-            // Invaders start firing;
-            this.arrayOfInvaders[i-1].fire();
         }
     }
 
@@ -97,6 +95,19 @@ function TheGame() {
                 $(invaders[i]).css("top", (currentTop + invadersDescendSpeed) + "px");
             }
         }
+    }
+
+    this.invadersAttack = () => {
+        setInterval(() => {
+            for (let i = 0; i < this.arrayOfInvaders.length; i++) {
+                let a = Math.floor(Math.random() * this.configs.bombCurrency),
+                    b = Math.floor(Math.random() * this.configs.bombCurrency);
+
+                if (a == b) {
+                    this.arrayOfInvaders[i].fire();
+                }
+            }
+        }, 1000);
     }
 
     this.updateStatus = () => {
