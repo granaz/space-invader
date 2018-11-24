@@ -33,40 +33,40 @@ function Ship(x, y) {
         let moveInterval = setInterval(() => {
             if (gameState == "stopped" || gameState == "paused") {
                 clearInterval(moveInterval);
-            }else{
+            } else {
                 let laserBoundaries = document.getElementById(shot.id).getBoundingClientRect();
                 let invaders = thisGame.arrayOfInvaders;
-    
+
                 // Verify if the laser is touching one invader;
                 for (let i = 0; i < invaders.length; i++) {
                     let invaderBoundaries = document.getElementById(invaders[i].id).getBoundingClientRect();
-    
+
                     // Calculate top Varition before the Boundaries;
                     if ((invaderBoundaries.top + 20) >= laserBoundaries.top && (invaderBoundaries.top + 20) <= (laserBoundaries.top + 10)) {
                         if ((laserBoundaries.left + 2.5) >= invaderBoundaries.left && (laserBoundaries.left + 2.5) <= invaderBoundaries.right) {
                             $("#" + shot.id).remove();
                             $("#" + invaders[i].id).remove();
-    
+
                             // Clear interval
                             clearInterval(moveInterval);
-    
+
                             // Remove element from arrayofinvaders;
                             thisGame.arrayOfInvaders.splice(i, 1);
-    
+
                             // Incresce the points by level;
                             thisGame.configs.points += 10 * thisGame.configs.level;
-    
+
                             // Update status
-                            thisGame.updateStatus();
-    
+                            thisGame.updateStatus();                            
+
                             break;
                         }
                     }
                 }
-    
+
                 // If it's not hitting anything, move the laser shot;
                 shot.move();
-    
+
                 // If it hits the top, delete the laser and clear the interval;
                 if (shot.currentY == 6) {
                     clearInterval(moveInterval);
@@ -75,6 +75,8 @@ function Ship(x, y) {
             }
         }, thisGame.configs.laserSpeed * 10);
 
+        // Reset the timer;
+        fireTime = thisGame.configs.fireTime;
     }
 
     // Render the first time...

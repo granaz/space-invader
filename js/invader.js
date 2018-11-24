@@ -15,7 +15,13 @@ function Invader(x, y, id) {
         $("#game #blockOfInvaders").append(spanHtml);
     }
 
-    this.move = () => {        
+    this.move = () => {
+        if (this.currentY >= 96) {
+            thisGame.gameOver();
+
+            return false;
+        }
+
         $("#"+this.id).css("top", (this.currentY + thisGame.configs.invadersDescendSpeed) + "%");
         this.currentY += thisGame.configs.invadersDescendSpeed;
     }

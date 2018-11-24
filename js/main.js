@@ -29,7 +29,8 @@ function TheGame() {
         invadersSpeed: 10,
         invadersDescendSpeed: 2,
         numberOfInvaders: 20,
-        invadersContainer: 1
+        invadersContainer: 1,
+        fireTime: 25
     }
 
     // Creating the elements;

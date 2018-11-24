@@ -33,6 +33,8 @@
 <script>
     //Initialise the game;
     var thisGame;
+    var fireTime;
+    var mapKeys = {};
 
     $(document).keydown((key) => {
         if (key.keyCode == keySpace && gameState == "stopped") {
@@ -48,39 +50,49 @@
             // Invaders start to attack;
             thisGame.invadersAttack();
 
+            fireTime = thisGame.configs.fireTime;
+
             let levelInterval = setInterval(() => {
-                if(thisGame.arrayOfInvaders.length == 0 && gameState == "running"){
+                if (thisGame.arrayOfInvaders.length == 0 && gameState == "running") {
                     thisGame.nextLevel();
                 }
 
-                if(thisGame.configs.lives == 0 && gameState == "running"){
+                if (thisGame.configs.lives == 0 && gameState == "running") {
                     thisGame.gameOver();
                 }
             }, 200);
         }
     });
 
-    // Capturing Ship Moviment and Firing;
-    var map = {};
-    var onkeydown = onkeyup = function (e) {
-        e = e || event;
-        map[e.keyCode] = e.type == 'keydown';
+
+    function fireTheShip() {
+        if (fireTime == 0) thisGame.ship.fire();
+
+        fireTime--;
+    }
+
+    window.onkeydown = (e) => {
+        mapKeys[e.keyCode] = true;
 
         if (gameState == "running") {
-            if (map[keyLeft] == true && map[keySpace] == true) {
+            if (mapKeys[keyLeft] == true && mapKeys[keySpace] == true) {
                 thisGame.ship.move(keyLeft);
-                thisGame.ship.fire();
-            } else if (map[keyRight] == true && map[keySpace] == true) {
+                fireTheShip();
+            } else if (mapKeys[keyRight] == true && mapKeys[keySpace] == true) {
                 thisGame.ship.move(keyRight);
-                thisGame.ship.fire();
-            } else if (map[keyRight] == true) {
+                fireTheShip();
+            } else if (mapKeys[keyRight] == true) {
                 thisGame.ship.move(keyRight);
-            } else if (map[keyLeft] == true) {
+            } else if (mapKeys[keyLeft] == true) {
                 thisGame.ship.move(keyLeft);
-            } else if (map[keySpace] == true){
-                thisGame.ship.fire();
+            } else if (mapKeys[keySpace] == true) {
+                fireTheShip();
             }
-        }        
+        }
+    }
+
+    window.onkeyup = (e) => {
+        mapKeys[e.keyCode] = false;
     }
 </script>
 
