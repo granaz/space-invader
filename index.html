@@ -44,10 +44,6 @@
     </div>
 </body>
 <script>
-    //Initialise the game;
-    var thisGame;
-    var mapKeys = {};
-
     $(document).keydown((key) => {
         if (key.keyCode == keySpace && gameState == "stopped") {
             // Initialising the Game;
@@ -67,12 +63,12 @@
              *  Event loops, checks what's going on in the game; 
              * 
              */
-            let actionsLoop = setInterval(() => {
+            actionsLoop = setInterval(() => {
                 if (mapKeys[keyLeft] === true) thisGame.ship.move(keyLeft);
                 if (mapKeys[keyRight] === true) thisGame.ship.move(keyRight);
             }, 50);
 
-            let fireLoop = setInterval(() => {
+            fireLoop = setInterval(() => {
                 if (mapKeys[keySpace] === true) thisGame.ship.fire();
             }, thisGame.configs.fireTime);
 

@@ -12,7 +12,8 @@ const keyLeft = 37;
 const keyRight = 39;
 const keySpace = 32;
 
-var gameState = "stopped";
+//Initialise the game;
+var gameState = "stopped", thisGame, actionsLoop, fireLoop, mapKeys = {};
 
 function TheGame() {
     // change the gameState
@@ -133,7 +134,7 @@ function TheGame() {
             this.configs.bombCurrency++;
             this.configs.invadersSpeed++;
             this.configs.invadersDescendSpeed++;
-            
+
             // Stop incrementing invaders after 100;
             if (this.configs.numberOfInvaders < 100) this.configs.numberOfInvaders += 10;
 
@@ -155,6 +156,10 @@ function TheGame() {
     this.gameOver = () => {
         // Game Over, it will prepare the map to restart the game;
         gameState = "stopped";
+
+        // Clear the event loop;
+        clearInterval(actionsLoop);
+        clearInterval(fireLoop);
 
         this.arrayOfInvaders = [];
 
