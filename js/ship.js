@@ -74,9 +74,6 @@ function Ship(x, y) {
                 }
             }
         }, thisGame.configs.laserSpeed * 10);
-
-        // Reset the timer;
-        fireTime = thisGame.configs.fireTime;
     }
 
     // Render the first time...

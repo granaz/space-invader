@@ -6,7 +6,13 @@
 html, body{
     padding: 0px;
     margin: 0px;
-    font-family: "Calibri", sans-serif;
+    font-family: 'VT323', monospace;
+    background-color: black
+}
+
+p{
+    padding: 0px;
+    margin: 0px;
 }
 
 #game{
@@ -15,14 +21,15 @@ html, body{
     margin: 0 auto;
     display: block;
     background-color: black;
+    border: 1px solid #fff;
     position: relative;
 }
 
-#blockOfInvaders{
-    width: 250px;
-    height: 500px;
-    position: relative;
-    margin: 0 auto;
+#title{
+    color: #fff;
+    font-size: 3em;
+    letter-spacing: 5px;
+    text-align: center;
 }
 
 #status{
@@ -30,7 +37,34 @@ html, body{
     height: auto;
     position: relative;
     margin: 0 auto;
-    background-color: #bebebe;
+    background-color: #fff;
+    border: 1px solid #fff;
+    font-size: 1.7em;
+}
+    #status div{
+        display: inline-block;
+        margin-right: 35px;
+    }
+
+#instructions{
+    width: 470px;
+    height: auto;
+    position: relative;
+    margin: 0 auto;
+    background-color: #fff;
+    margin-top: 35px;
+    font-size: 1.2em;
+    padding: 15px;
+}
+    #instructions ul li{
+        list-style: square;
+    }
+
+#blockOfInvaders{
+    width: 250px;
+    height: 500px;
+    position: relative;
+    margin: 0 auto;
 }
 
 .block{
@@ -43,14 +77,14 @@ html, body{
     width: 5px;
     height: 10px;
     position: absolute;
-    background-color: green;
+    background-color: #fff;
 }
 
 .bomb{
     width: 5px;
     height: 10px;
     position: absolute;
-    background-color: aqua;
+    background-color: red;
 }
 
 .invaderBlock{
@@ -58,7 +92,7 @@ html, body{
 }
 
 #shipBlock{
-    background-color: blue;
+    background-color: #fff;
     top: calc(100% - 25px);
     left: calc(50% - 20px);
 }

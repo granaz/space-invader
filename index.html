@@ -8,6 +8,7 @@
     <title>Space Invaders</title>
 
     <!-- CSS -->
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 
     <!-- JS -->
@@ -20,6 +21,8 @@
 </head>
 
 <body>
+    <h1 id="title">SPACE INVADERS</h1>
+
     <div id="game">
         <div id="blockOfInvaders"></div>
     </div>
@@ -29,11 +32,20 @@
         <div>Lives: <span id="statusLives">5</span></div>
         <div>Points: <span id="statusPoints">0</span></div>
     </div>
+
+    <div id="instructions">
+        <p>Instructions:</p>
+        <ul>
+            <li>Press Space to begin;</li>
+            <li>Hold Space to Fire;</li>
+            <li>Move the Ship with arrow keys;</li>
+            <li>Enjoy!</li>
+        </ul>
+    </div>
 </body>
 <script>
     //Initialise the game;
     var thisGame;
-    var fireTime;
     var mapKeys = {};
 
     $(document).keydown((key) => {
@@ -50,7 +62,19 @@
             // Invaders start to attack;
             thisGame.invadersAttack();
 
-            fireTime = thisGame.configs.fireTime;
+            /**
+             * 
+             *  Event loops, checks what's going on in the game; 
+             * 
+             */
+            let actionsLoop = setInterval(() => {
+                if (mapKeys[keyLeft] === true) thisGame.ship.move(keyLeft);
+                if (mapKeys[keyRight] === true) thisGame.ship.move(keyRight);
+            }, 50);
+
+            let fireLoop = setInterval(() => {
+                if (mapKeys[keySpace] === true) thisGame.ship.fire();
+            }, thisGame.configs.fireTime);
 
             let levelInterval = setInterval(() => {
                 if (thisGame.arrayOfInvaders.length == 0 && gameState == "running") {
@@ -64,31 +88,8 @@
         }
     });
 
-
-    function fireTheShip() {
-        if (fireTime == 0) thisGame.ship.fire();
-
-        fireTime--;
-    }
-
     window.onkeydown = (e) => {
         mapKeys[e.keyCode] = true;
-
-        if (gameState == "running") {
-            if (mapKeys[keyLeft] == true && mapKeys[keySpace] == true) {
-                thisGame.ship.move(keyLeft);
-                fireTheShip();
-            } else if (mapKeys[keyRight] == true && mapKeys[keySpace] == true) {
-                thisGame.ship.move(keyRight);
-                fireTheShip();
-            } else if (mapKeys[keyRight] == true) {
-                thisGame.ship.move(keyRight);
-            } else if (mapKeys[keyLeft] == true) {
-                thisGame.ship.move(keyLeft);
-            } else if (mapKeys[keySpace] == true) {
-                fireTheShip();
-            }
-        }
     }
 
     window.onkeyup = (e) => {

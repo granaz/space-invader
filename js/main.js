@@ -30,7 +30,7 @@ function TheGame() {
         invadersDescendSpeed: 2,
         numberOfInvaders: 20,
         invadersContainer: 1,
-        fireTime: 25
+        fireTime: 750
     }
 
     // Creating the elements;
@@ -133,7 +133,9 @@ function TheGame() {
             this.configs.bombCurrency++;
             this.configs.invadersSpeed++;
             this.configs.invadersDescendSpeed++;
-            this.configs.numberOfInvaders += 10;        
+            
+            // Stop incrementing invaders after 100;
+            if (this.configs.numberOfInvaders < 100) this.configs.numberOfInvaders += 10;
 
             //clear the map
             $(".laser").remove();
